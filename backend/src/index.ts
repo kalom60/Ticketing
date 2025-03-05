@@ -2,12 +2,16 @@ import express from "express";
 import dotenv from "dotenv";
 import connectDB from "./config/db";
 import { setupSwagger } from "./config/swagger";
+import passport from "passport";
 
 dotenv.config();
 
 connectDB();
 
 const app = express();
+
+app.use(passport.initialize());
+import "./config/passport";
 
 app.use(express.json());
 setupSwagger(app);
