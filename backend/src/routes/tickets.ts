@@ -74,4 +74,27 @@ router.post(
   TicketController.create,
 );
 
+/**
+ * @swagger
+ * /api/v1/ticket:
+ *   get:
+ *     summary: Retrieve tickets
+ *     description: Returns all tickets if the user is an admin. Otherwise, returns only the tickets belonging to the authenticated user.
+ *     tags: [Ticket]
+ *     responses:
+ *       200:
+ *         description: List of tickets retrieved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Ticket'
+ *       401:
+ *         description: Unauthorized - User not authenticated
+ *       403:
+ *         description: Forbidden - Insufficient permissions
+ */
+router.get("/", authenticateJWT, TicketController.get);
+
 export default router;
