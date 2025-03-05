@@ -1,7 +1,11 @@
 import TicketController from "src/controller/ticketController";
-import { ticketSchema, validate } from "../middlewares/validation";
+import {
+  ticketSchema,
+  updateTicketSchema,
+  validate,
+} from "../middlewares/validation";
 import express from "express";
-import { authenticateJWT } from "src/middlewares/authenticate";
+import { authenticateJWT, isAdmin } from "src/middlewares/authenticate";
 
 const router = express.Router();
 
@@ -96,5 +100,54 @@ router.post(
  *         description: Forbidden - Insufficient permissions
  */
 router.get("/", authenticateJWT, TicketController.get);
+
+/**
+ * @swagger
+ * /api/v1/ticket/{id}:
+ *   put:
+ *     summary: Update the status of a ticket
+ *     tags: [Ticket]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The ID of the ticket to update
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               status:
+ *                 type: string
+ *                 enum: ["Open", "In Progress", "Closed"]
+ *                 example: "Closed"
+ *     responses:
+ *       200:
+ *         description: Ticket updated successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Ticket'
+ *       400:
+ *         description: Invalid request body
+ *       401:
+ *         description: Unauthorized - Admin access required
+ *       403:
+ *         description: Forbidden - Insufficient permissions
+ *       404:
+ *         description: Ticket not found
+ *       500:
+ *         description: Internal server error
+ */
+router.put(
+  "/:id",
+  isAdmin,
+  validate(updateTicketSchema),
+  TicketController.update,
+);
 
 export default router;
