@@ -26,6 +26,19 @@ class TicketController {
       next(error);
     }
   }
+
+  static async get(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { id, role } = req.user as AuthenticatedUser;
+      const query = role === "admin" ? {} : { user: id };
+
+      const tickets = await Ticket.find(query);
+
+      res.json(tickets);
+    } catch (error) {
+      next(error);
+    }
+  }
 }
 
 export default TicketController;
