@@ -47,7 +47,7 @@ const router = express.Router();
 
 /**
  * @swagger
- * /api/v1/ticket:
+ * /api/v1/tickets:
  *   post:
  *     summary: Register a new ticket
  *     tags: [Ticket]
@@ -80,7 +80,7 @@ router.post(
 
 /**
  * @swagger
- * /api/v1/ticket:
+ * /api/v1/tickets:
  *   get:
  *     summary: Retrieve tickets
  *     description: Returns all tickets if the user is an admin. Otherwise, returns only the tickets belonging to the authenticated user.
@@ -103,7 +103,7 @@ router.get("/", authenticateJWT, TicketController.get);
 
 /**
  * @swagger
- * /api/v1/ticket/{id}:
+ * /api/v1/tickets/{id}:
  *   put:
  *     summary: Update the status of a ticket
  *     tags: [Ticket]

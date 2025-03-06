@@ -5,6 +5,6 @@ import ticketRouter from "./tickets";
 const router = express.Router();
 
 router.use("/auth", authRouter);
-router.use("/ticket", ticketRouter);
+router.use("/tickets", ticketRouter);
 
 export default router;
