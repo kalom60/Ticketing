@@ -121,7 +121,7 @@ export class LoginForm extends Component<LoginProps, LoginState> {
   }
 }
 
-const LoginFormWrapper = (props: LoginProps) => {
+const LoginFormWrapper = (props: any) => {
   const navigate = useNavigate();
 
   return <LoginForm {...props} navigate={navigate} />;
