@@ -17,7 +17,7 @@ class AuthController {
       const { email, password, role } = req.body;
 
       if (await User.findOne({ email })) {
-        return res.status(400).json({ message: "User already registered" });
+        return res.status(400).json({ message: "User already exists" });
       }
 
       const hashedPassword = await hashPassword(password);
@@ -29,7 +29,23 @@ class AuthController {
       });
 
       await user.save();
-      return res.status(201).json(user);
+      const accessToken = AuthController.generateToken(
+        user as User,
+        process.env.JWT_SECRET as string,
+        "1h",
+      );
+      const refreshToken = AuthController.generateToken(
+        user as User,
+        process.env.REFRESH_SECRET as string,
+        "7d",
+      );
+
+      return res.status(201).json({
+        message: "User registered successfully",
+        accessToken,
+        refreshToken,
+        user,
+      });
     } catch (error) {
       next(error);
     }
