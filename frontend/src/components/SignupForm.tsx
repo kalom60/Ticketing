@@ -12,17 +12,21 @@ import {
 import { AppDispatch, RootState } from "../redux/store";
 import { signupUser } from "../redux/authSlice";
 import { connect } from "react-redux";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, NavigateFunction, useNavigate } from "react-router-dom";
 import { Loader2 } from "lucide-react";
 
 interface SignupProps {
   loading: boolean;
   error: string | null;
-  signupUser: (form: {
-    email: string;
-    password: string;
-    role: string | undefined;
-  }) => void;
+  signupUser: (
+    form: {
+      email: string;
+      password: string;
+      role: string | undefined;
+    },
+    navigate: NavigateFunction
+  ) => void;
+  navigate: NavigateFunction;
 }
 
 interface SignupState {
@@ -55,11 +59,14 @@ class SignupForm extends Component<SignupProps, SignupState> {
 
   handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    this.props.signupUser({
-      email: this.state.email,
-      password: this.state.password,
-      role: this.state.role,
-    });
+    this.props.signupUser(
+      {
+        email: this.state.email,
+        password: this.state.password,
+        role: this.state.role,
+      },
+      this.props.navigate
+    );
   };
 
   render() {
@@ -146,7 +153,7 @@ const mapStateToProps = (state: RootState) => ({
 const mapDispatchToProps = (dispatch: AppDispatch) => ({
   signupUser: (
     form: { email: string; password: string; role: string | undefined },
-    navigate: any
+    navigate: NavigateFunction
   ) => dispatch(signupUser({ userData: form, navigate })),
 });
 
