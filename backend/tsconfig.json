@@ -18,11 +18,11 @@
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
 
-    "types": ["node"],
+    "types": ["node", "jest"],
     "typeRoots": ["./node_modules/@types"],
 
     "baseUrl": "."
   },
-  "include": ["src/**/*.ts"],
+  "include": ["src/**/*.ts", "tests/**/*.ts"],
   "exclude": ["node_modules", "dist"]
 }
