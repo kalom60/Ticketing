@@ -56,6 +56,37 @@ export const signupUser = createAsyncThunk(
   }
 );
 
+export const loginUser = createAsyncThunk(
+  "auth/loginUser",
+  async (
+    {
+      credentials,
+      navigate,
+    }: {
+      credentials: { email: string; password: string };
+      navigate: NavigateFunction;
+    },
+    { rejectWithValue }
+  ) => {
+    try {
+      const response = await axios.post("/auth/login", credentials);
+      navigate("/");
+      return response.data;
+    } catch (error: any) {
+      if (error.response) {
+        if (error.response.status === 401) {
+          toast.error(error.response.data.message || "Invalid input");
+          return rejectWithValue(error.response.data.message);
+        } else if (error.response.status === 500) {
+          toast.error("Something went wrong");
+          return rejectWithValue("Something went wrong");
+        }
+      }
+      return rejectWithValue("Login failed");
+    }
+  }
+);
+
 const authSlice = createSlice({
   name: "auth",
   initialState,
@@ -79,6 +110,20 @@ const authSlice = createSlice({
         toast.success("Signup Successful");
       })
       .addCase(signupUser.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
+      })
+      .addCase(loginUser.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(loginUser.fulfilled, (state, action) => {
+        state.loading = false;
+        state.user = action.payload.user;
+        state.token = action.payload.accessToken;
+        localStorage.setItem("token", action.payload.accessToken);
+        toast.success("Login Successful");
+      })
+      .addCase(loginUser.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as string;
       });
